@@ -15,7 +15,7 @@ public class AuthInterceptor implements Interceptor {
     String authorization;
 
     public AuthInterceptor(String key) {
-        this.authorization = "Token token=\"" + key + "\"";
+        this.authorization = "Token " + key;
     }
 
     public Response intercept(Chain chain) throws IOException {

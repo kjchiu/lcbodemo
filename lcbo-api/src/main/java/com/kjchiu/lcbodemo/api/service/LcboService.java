@@ -5,6 +5,7 @@ import com.kjchiu.lcbodemo.api.service.entity.Store;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface LcboService {
 
@@ -13,4 +14,10 @@ public interface LcboService {
 
     @GET("products/{id}")
     Call<GetById<Product>> getProduct(@Path("id") int id);
+
+    @GET("products")
+    Call<Paginated<Product>> findProducts(@Query("q") String query);
+
+    @GET("products")
+    Call<Paginated<Product>> findProducts(@Query("q") String query, @Query("page") int page);
 }

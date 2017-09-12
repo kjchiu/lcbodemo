@@ -24,4 +24,35 @@ public class Product {
         this.imageThumbUrl = imageThumbUrl;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public boolean isDiscontinued() {
+        return isDiscontinued;
+    }
+
+    public int getPriceInCents() {
+        return priceInCents;
+    }
+
+    public int getRegularPriceInCents() {
+        return regularPriceInCents;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getImageThumbUrl() {
+        return imageThumbUrl;
+    }
 }
