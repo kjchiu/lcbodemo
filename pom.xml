@@ -11,6 +11,7 @@
 	<modules>
 		<module>lcbo-api</module>
 		<module>lcbo-server</module>
+		<module>lcbo-client</module>
 	</modules>
 
 	<properties>

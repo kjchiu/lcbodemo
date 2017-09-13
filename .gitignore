@@ -2,3 +2,5 @@
 .idea
 **/target
 config/server.properties
+**/node_modules/*
+**/fonts/
