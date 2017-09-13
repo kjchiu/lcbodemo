@@ -15,7 +15,13 @@ public class Paginated<T> {
     private List<T> items;
 
     @JsonCreator
-    public Paginated(int status, String message, @JsonProperty("pager") PageInfo pageInfo, @JsonProperty("result") List<T> items) {
+    public Paginated(
+            int status,
+            String message,
+            @JsonProperty("pager") PageInfo pageInfo,
+            @JsonProperty("result") List<T> items) {
+        this.status = status;
+        this.message = message;
         this.pageInfo = pageInfo;
         this.items = items;
     }

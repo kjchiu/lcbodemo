@@ -11,13 +11,14 @@ public class PageInfo {
     private int page;
 
     @JsonCreator
-    public PageInfo(int recordsPerPage, int totalRecordCount, boolean isFirstPage, boolean isFinalPage, int page) {
+    public PageInfo(int recordsPerPage, int totalRecordCount, boolean isFirstPage, boolean isFinalPage, int currentPage) {
         this.recordsPerPage = recordsPerPage;
         this.totalRecordCount = totalRecordCount;
         this.isFirstPage = isFirstPage;
         this.isFinalPage = isFinalPage;
-        this.page = page;
+        this.page = currentPage;
     }
+
 
     public int getRecordsPerPage() {
         return recordsPerPage;
