@@ -1,6 +1,5 @@
 package com.kjchiu.lcbodemo.server.rest;
 
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.kjchiu.lcbodemo.server.App;
 import com.kjchiu.lcbodemo.server.AuthFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -9,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.security.RolesAllowed;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -44,15 +43,15 @@ public class UserResource {
             if (!auth.startsWith("Basic ")) {
                 return;
             }
-            String base64UserPassword = auth.substring("Basic ".length());
-            String userPassword = new String(Base64.getDecoder().decode(base64UserPassword), charset);
+            String userPassword = auth.substring("Basic ".length());
             String[] tokenized = userPassword.split(":");
             if (tokenized.length != 2) {
                 return;
             }
 
             this.user = tokenized[0];
-            this.password = tokenized[1];
+            String base64Password = tokenized[1];
+            this.password = new String(Base64.getDecoder().decode(base64Password));
         }
 
         public String getUser() {
@@ -71,6 +70,7 @@ public class UserResource {
 
     @PUT
     @Path("/user")
+    @Produces(MediaType.TEXT_PLAIN)
     public String create(@Context ContainerRequestContext context) {
         BasicCredentials credentials = new BasicCredentials(context);
 
@@ -83,7 +83,9 @@ public class UserResource {
                 return "";
             }
 
-            return generateAuthToken(jedis, credentials.getUser());
+            String token = generateAuthToken(jedis, credentials.getUser());
+            logger.debug("{} -> {}", credentials.getUser(), token);
+            return token;
 
 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -93,9 +95,16 @@ public class UserResource {
 
     }
 
+    @POST
+    @Path("/user")
+    @RolesAllowed(AuthFilter.AUTHENTICATED_ROLE)
+    public String auth(@Context ContainerRequestContext context) {
+        return context.getSecurityContext().getUserPrincipal().getName();
+    }
+
     @GET
     @Path("/user")
-    public String auth(@Context ContainerRequestContext context) {
+    public String login(@Context ContainerRequestContext context) {
         BasicCredentials credentials = new BasicCredentials(context);
 
         try {

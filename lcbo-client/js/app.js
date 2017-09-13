@@ -9,8 +9,8 @@ import Network from './Network';
 import lcbo from './Lcbo';
 import App from './components/App.jsx';
 
-import { products } from './reducers/Products';
-import { login } from './reducers/Login';
+import products from './reducers/Products';
+import login from './reducers/Login';
 import {
 	applyMiddleware,
 	combineReducers,
@@ -28,8 +28,12 @@ const store = createStore(reducer, applyMiddleware(
 ));
 window.STORE = store;
 
-import { queryProducts } from './Actions';
-store.dispatch(queryProducts('beer', 1));
+import * as Actions from './Actions';
+window.ACTIONS = Actions;
+//store.dispatch(queryProducts('beer', 1));
+
+store.dispatch(Actions.createUser('hello', 'there'));
+//store.dispatch(Actions.login('hello', 'there'));
 
 ReactDOM.render(<App />, document.getElementById('root'));
 console.log('hi');

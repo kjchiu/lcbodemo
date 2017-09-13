@@ -12,6 +12,7 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 
 @PreMatching
 @Priority(Priorities.AUTHENTICATION)
@@ -34,9 +35,8 @@ public class AuthFilter implements ContainerRequestFilter {
         String authHeader = requestContext.getHeaderString("Auth-Token");
         try(Jedis jedis = jedisPool.getResource()) {
 
-            final boolean isAuthed = StringUtils.isBlank(authHeader)
-                ? false
-                : jedis.exists(SESSION_TOKEN_PREFIX + authHeader);
+            final String user = jedis.get(SESSION_TOKEN_PREFIX + authHeader);
+            final boolean isAuthed = ! StringUtils.isBlank(user);
 
             if (isAuthed) {
                 jedis.expire(authHeader,  SESSION_LENGTH_SECONDS);
@@ -45,8 +45,7 @@ public class AuthFilter implements ContainerRequestFilter {
             requestContext.setSecurityContext(new SecurityContext() {
                 @Override
                 public Principal getUserPrincipal() {
-                    final String name = isAuthed ? AUTHENTICATED_ROLE : "";
-                    return () -> name;
+                    return () -> Optional.ofNullable(user).orElse("");
                 }
 
                 @Override

@@ -1,7 +1,7 @@
 import {
 	QUERY_PRODUCTS,
 	RECEIVE_PRODUCTS
-} from '../Actions.js';
+} from '../Actions';
 
 import Lcbo from '../Lcbo';
 
@@ -12,7 +12,7 @@ var DEFAULT_STATE = {
 	pageInfo: {}
 }
 
-export function products(state = {}, action) {
+export default function products(state = {}, action) {
 	switch(action.type) {
 		case QUERY_PRODUCTS:
 			return {
