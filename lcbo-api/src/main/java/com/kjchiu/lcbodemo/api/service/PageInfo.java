@@ -2,6 +2,9 @@ package com.kjchiu.lcbodemo.api.service;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+/**
+ *
+ */
 public class PageInfo {
 
     private int recordsPerPage;

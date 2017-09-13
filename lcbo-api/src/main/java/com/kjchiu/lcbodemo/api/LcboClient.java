@@ -18,6 +18,9 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * LCBO API client
+ */
 public class LcboClient {
 
     private static final Logger logger = LoggerFactory.getLogger(LcboClient.class);
@@ -49,14 +52,23 @@ public class LcboClient {
         return findById(id, service::getProduct);
     }
 
-    public Paginated<Product> findProducts(String query) {
-        return findProducts(query, 1);
-    }
-
+    /**
+     * Find products which match query
+     * @param query query string
+     * @param page page of results to retrieve
+     * @return
+     */
     public Paginated<Product> findProducts(String query, int page) {
         return findByQuery(query, page, ITEMS_PER_PAGE, service::findProducts);
     }
 
+    /**
+     * Get entity by id
+     * @param id
+     * @param provider
+     * @param <T>
+     * @return
+     */
     private <T> Optional<T> findById(int id, Function<Integer, Call<GetById<T>>> provider) {
         Call<GetById<T>> call = provider.apply(id);
         try {
