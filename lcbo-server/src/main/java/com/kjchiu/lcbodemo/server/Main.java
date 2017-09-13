@@ -29,6 +29,8 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     private static final String SERVER_PROPERTIES_PATH = "config/server.properties";
+    private static final String DEFAULT_REDIS_HOST = "localhost";
+    private static final String REDIS_KEY_PREIX = "lcbo:";
 
     private static final List<Function<LcboClient, Object>> resourceFactories = Arrays.asList(
             ProductResource::new,
