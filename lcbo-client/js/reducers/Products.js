@@ -24,6 +24,7 @@ export default function products(state = {}, action) {
 		case RECEIVE_PRODUCTS:
 			var result = action.result;
 			return {
+				...state,
 				querying: false,
 				items: result.items,
 				pageInfo: result.pageInfo

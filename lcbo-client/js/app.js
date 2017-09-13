@@ -1,7 +1,8 @@
 import Bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
@@ -35,5 +36,8 @@ window.ACTIONS = Actions;
 store.dispatch(Actions.createUser('hello', 'there'));
 //store.dispatch(Actions.login('hello', 'there'));
 
-ReactDOM.render(<App />, document.getElementById('root'));
-console.log('hi');
+render(
+	<Provider store={store}>
+		<App />
+	</Provider>,
+	document.getElementById('root'));

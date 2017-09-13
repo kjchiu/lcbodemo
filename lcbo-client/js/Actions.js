@@ -11,7 +11,7 @@ export const RECEIVE_PRODUCTS = 'RECEIVE_PRODUCTS';
  * @param {Number} page
  */
 export function queryProducts(query, page) {
-	page |= 1;
+	page = page || 1;
 	return dispatch => {
 		dispatch({
 			type: QUERY_PRODUCTS,
@@ -22,6 +22,7 @@ export function queryProducts(query, page) {
 		lcbo.find(query, page).then(function received(result) {
 			dispatch({
 				type: RECEIVE_PRODUCTS,
+				query,
 				result
 			});
 		});

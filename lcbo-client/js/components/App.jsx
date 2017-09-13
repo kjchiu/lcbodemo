@@ -10,6 +10,9 @@ import {
 	Row
 } from 'react-bootstrap';
 
+import Search from '../containers/Search.jsx';
+import ProductGrid from '../components/ProductGrid.jsx';
+
 export default class App extends React.Component {
 
 	render() {
@@ -17,18 +20,20 @@ export default class App extends React.Component {
 			<div>
 				<Navbar>
 					<Nav>
-						<NavItem>login</NavItem>
-						<NavItem>hello</NavItem>
+						<NavItem>Login</NavItem>
 					</Nav>
 				</Navbar>
 				<Grid>
 					<Row>
 						<Col xs={4}>
-							<FormControl placeholder={"Search..."} />
+							<Search/>
 						</Col>
 						<Col xs={4}>
 							what
 						</Col>
+					</Row>
+					<Row>
+						<ProductGrid />
 					</Row>
 				</Grid>
 			</div>

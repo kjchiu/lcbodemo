@@ -19,5 +19,5 @@ public interface LcboService {
     Call<Paginated<Product>> findProducts(@Query("q") String query);
 
     @GET("products")
-    Call<Paginated<Product>> findProducts(@Query("q") String query, @Query("page") int page);
+    Call<Paginated<Product>> findProducts(@Query("q") String query, @Query("page") int page, @Query("per_page") int pageSize);
 }

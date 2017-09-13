@@ -37,10 +37,8 @@ public class ProductResource extends LcboWrapper {
 
     @GET
     @Path("/product")
-    @RolesAllowed(AuthFilter.AUTHENTICATED_ROLE)
     @Produces(MediaType.APPLICATION_JSON)
-    public Paginated<Product> find(@Context SecurityContext securityContext, @QueryParam("q") String query) {
-        logger.info(securityContext.getAuthenticationScheme());
-        return client.findProducts(query);
+    public Paginated<Product> find(@QueryParam("q") String query, @QueryParam("page") @DefaultValue("1") int page) {
+        return client.findProducts(query,  page);
     }
 }
