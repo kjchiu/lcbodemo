@@ -19,16 +19,20 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<div>
+				<Navbar>
+					<Navbar.Header>
+						<Navbar.Brand>
+							<a href="#">LCBO Wrapper</a>
+						</Navbar.Brand>
+					</Navbar.Header>
+					<Navbar.Collapse>
+						<User />
+					</Navbar.Collapse>
+				</Navbar>
 				<Grid>
 					<Row>
-						<User />
 					</Row>
-					<Row>
-						<Col xs={4}>
-							<Search/>
-						</Col>
-					</Row>
-					<Row>
+					<Row bsStyle="text-center">
 						<ProductGrid />
 					</Row>
 				</Grid>

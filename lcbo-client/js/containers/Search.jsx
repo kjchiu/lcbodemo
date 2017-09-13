@@ -15,7 +15,7 @@ class Search extends React.Component {
 	render() {
 		return (
 			<div>
-				<Form horizontal onSubmit={this.props.onSearch}>
+				<Form horizontal onSubmit={this.props.onSearch.bind(this, this.props.token)}>
 					<FormControl placeholder={"Search..."} />
 				</Form >
 			</div>
@@ -24,16 +24,19 @@ class Search extends React.Component {
 }
 
 function mapStateToProps(state) {
-	return {};
+	var token = state.login.token || "";
+	return {
+		token
+	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onSearch: (e) => {
+		onSearch: (token, e) => {
 			e.preventDefault();
 			// barf
 			var query = e.target.elements[0].value;
-			dispatch(queryProducts(query, 1));
+			dispatch(queryProducts(query, 1, token));
 			return false;
 		}
 	}

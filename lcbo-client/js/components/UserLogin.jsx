@@ -3,6 +3,7 @@ import {
 	Button,
 	ControlLabel,
 	Form,
+	Navbar,
 	FormControl,
 	FormGroup
 } from 'react-bootstrap';
@@ -10,22 +11,24 @@ import {
 import PropTypes from 'prop-types';
 
 const UserLogin = ({login, createUser}) => (
-	<Form id="user-login" inline onSubmit={login}>
-		<FormGroup>
-			<ControlLabel>User</ControlLabel>
+	<Navbar.Form pullLeft>
+		<Form id="user-login"  onSubmit={login}>
+			<FormGroup>
+				<ControlLabel>User</ControlLabel>
+				{' '}
+				<FormControl type='text' placeholder={'user'} />
+			</FormGroup>
 			{' '}
-			<FormControl type='text' placeholder={'user'} />
-		</FormGroup>
-		{' '}
-		<FormGroup>
-			<ControlLabel>Password</ControlLabel>
+			<FormGroup>
+				<ControlLabel>Password</ControlLabel>
+				{' '}
+				<FormControl type='password' placeholder={"password"} />
+			</FormGroup>
 			{' '}
-			<FormControl type='password' placeholder={"password"} />
-		</FormGroup>
-		{' '}
-		<Button type="submit">Login</Button>
-		<Button onClick={createUser}>Sign Up</Button>
-	</Form>
+			<Button type="submit">Login</Button>
+			<Button onClick={createUser}>Sign Up</Button>
+		</Form>
+	</Navbar.Form>
 );
 
 UserLogin.propTypes = {

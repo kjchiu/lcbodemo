@@ -1,19 +1,16 @@
 import React from 'react';
 import {
 	Button,
-	ControlLabel,
-	Form,
-	FormControl,
-	FormGroup
+	Navbar,
 } from 'react-bootstrap';
 
 import PropTypes from 'prop-types';
 
 const AuthenticatedUser = ({user, logout}) => (
-	<ul className="inline">
-		<li><h3>Welcome {user}</h3></li>
-		<li><Button onClick={logout}>Logout</Button></li>
-	</ul>
+	<div>
+		<Navbar.Text>Welcome {user}</Navbar.Text>
+		<Button onClick={logout}>Logout</Button>
+	</div>
 );
 
 AuthenticatedUser.propTypes = {

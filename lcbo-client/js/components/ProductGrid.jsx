@@ -15,17 +15,14 @@ import {
 } from 'react-bootstrap';
 
 import Product from './Product.jsx';
+import Search from '../containers/Search.jsx';
 
 const COLUMNS = 4;
 
 const ProductGrid = ({items, pageInfo, query, onSelectPage}) => {
-	if (! items || items.length === 0) {
-		return (<Jumbotron><h1>No matches found</h1></Jumbotron>);
-	}
-
 	var rows = [];
 	let row;
-	for(var idx = 0; idx < items.length; ++idx) {
+	for (var idx = 0; idx < items.length; ++idx) {
 		if (idx % COLUMNS === 0) {
 			row = [];
 			rows.push(row);
@@ -39,7 +36,7 @@ const ProductGrid = ({items, pageInfo, query, onSelectPage}) => {
 	}
 
 	var componentRows = [];
-	for(var idxRow =0, len = rows.length; idxRow < len; ++idxRow) {
+	for (var idxRow = 0, len = rows.length; idxRow < len; ++idxRow) {
 		let row = rows[idxRow];
 		componentRows.push(<Row key={"row-" + idxRow}>{row}</Row>);
 	}
@@ -48,7 +45,13 @@ const ProductGrid = ({items, pageInfo, query, onSelectPage}) => {
 	return (
 		<Grid>
 			<Row>
-				<Pagination
+				<Col xs={3}>
+					<Search/>
+				</Col>
+			</Row>
+			<Row>
+		<Col bsStyle="center-block">
+				<Pagination 
 					prev
 					next
 					first
@@ -59,6 +62,7 @@ const ProductGrid = ({items, pageInfo, query, onSelectPage}) => {
 					maxButtons={5}
 					activePage={pageInfo.page}
 					onSelect={onSelectPage.bind(this, query)} />
+		</Col>
 			</Row>
 			{componentRows}
 		</Grid>
@@ -72,7 +76,8 @@ ProductGrid.propTypes = {
 
 function mapStateToProps(state) {
 	var props = state.products
-	console.log('product grid props', props);
+	props.items = props.items || [];
+	props.pageInfo = props.pageInfo || {};
 	return props;
 }
 

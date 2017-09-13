@@ -24,7 +24,6 @@ Product.propTypes = {
 		regularPriceInCents: PropTypes.number.isRequired,
 		imageThumbUrl: PropTypes.string
 	}).isRequired,
-	onSelectPage: PropTypes.func.isRequired
 }
 
 export default Product;

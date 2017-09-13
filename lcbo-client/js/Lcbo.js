@@ -1,13 +1,25 @@
 import request from './Network';
 
 class Lcbo {
-	find(query, page) {
+
+	/**
+	 * Find products that match query
+	 * @param {String} query
+	 * @param {Number} page
+	 * @param {String} @optional token auth token
+	 */
+	find(query, page, token) {
 		var url = 'rest/product?q=' + encodeURIComponent(query);
 		if (page) {
 			url += '&page=' + page;
 		}
-		console.log(query, page, '->', url);
-		return request('GET', url).then(function done(xhr) {
+		var headers;
+		if (token) {
+			headers = {
+				'Auth-Token': token
+			}
+		}
+		return request('GET', url, headers).then(function done(xhr) {
 			var result = JSON.parse(xhr.response);
 			return Promise.resolve(result);
 		});

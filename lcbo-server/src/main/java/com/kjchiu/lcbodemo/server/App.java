@@ -66,7 +66,7 @@ public class App extends ResourceConfig {
 
         // explicitly register resources
         Arrays.asList(
-                new ProductResource(client),
+                new ProductResource(jedisPool, client),
                 new UserResource(jedisPool, salt),
                 new HelloWorld()
 
