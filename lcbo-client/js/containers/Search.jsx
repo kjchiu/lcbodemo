@@ -16,7 +16,7 @@ class Search extends React.Component {
 		return (
 			<div>
 				<Form horizontal onSubmit={this.props.onSearch}>
-				<FormControl placeholder={"Search..."} />
+					<FormControl placeholder={"Search..."} />
 				</Form >
 			</div>
 		);

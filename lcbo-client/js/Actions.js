@@ -100,20 +100,28 @@ export function login(user, password) {
 	var headers = addBasicAuth({}, user, password);
 	return dispatch => {
 		request('GET', '/rest/user', headers).then(function done(xhr) {
-			var token = JSON.parse(xhr.response);
+			var token = xhr.response;
 			authenticated(dispatch, user, token);
 		});
 	}
 
 }
 
-export function encodePassword(password) {
-	var bytes = new TextEncoder('utf-8').encode(password);
+export const LOGOUT = 'LOGOUT';
+export function logout() {
+	return {
+		type: 'LOGOUT'
+	}
+}
+
+export function base64encode(str) {
+	var bytes = new TextEncoder('utf-8').encode(str);
 	return base64js.fromByteArray(bytes);
 }
 
 function addBasicAuth(headers = {}, user, password) {
-	headers.Authorization = 'Basic ' + user + ':' + encodePassword(password);
+	var credentials = user + ':' + password;
+	headers.Authorization = 'Basic ' + base64encode(credentials);
 	return headers;
 }
 

@@ -17,9 +17,12 @@ export default function login(state={}, action) {
 				user: action.user,
 				token: action.token
 			};
+		case LOGOUT:
 		case CREATE_USER_FAILED:
 		case AUTH_FAILED:
 			expireAuthCookie();
+			// TODO: store some flag to distinguish between
+			// lack of auth vs failed auth
 			return {
 				user: '',
 				token: ''

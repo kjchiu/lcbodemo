@@ -25,8 +25,8 @@ import java.util.Base64;
 public class UserResource {
 
     private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
-
     private static final Charset charset = Charset.forName("UTF-8");
+    private static final String LOGIN_KEY_PREFIX = App.REDIS_KEY_PREFIX + "pass:";
 
     private final int ITERATIONS = 1000;
     private final JedisPool jedisPool;
@@ -40,18 +40,19 @@ public class UserResource {
 
         public BasicCredentials(ContainerRequestContext context) {
             String auth = context.getHeaderString("Authorization");
+
             if (!auth.startsWith("Basic ")) {
                 return;
             }
-            String userPassword = auth.substring("Basic ".length());
-            String[] tokenized = userPassword.split(":");
+            String encoded = auth.substring("Basic ".length());
+            String decoded = new String(Base64.getDecoder().decode(encoded), charset);
+            String[] tokenized = decoded.split(":");
             if (tokenized.length != 2) {
                 return;
             }
 
             this.user = tokenized[0];
-            String base64Password = tokenized[1];
-            this.password = new String(Base64.getDecoder().decode(base64Password));
+            this.password = tokenized[1];
         }
 
         public String getUser() {
@@ -75,10 +76,10 @@ public class UserResource {
         BasicCredentials credentials = new BasicCredentials(context);
 
         try (Jedis jedis = jedisPool.getResource()) {
-            String key = App.REDIS_KEY_PREFIX + "user:" + credentials.getUser();
             String passwordHash = hashPassword(
                     credentials.getPassword());
-            long rc = jedis.setnx(key, passwordHash);
+            String key = LOGIN_KEY_PREFIX + passwordHash;
+            long rc = jedis.setnx(key, credentials.getUser());
             if (rc == 0) {
                 return "";
             }
@@ -112,7 +113,7 @@ public class UserResource {
             String passwordHash = hashPassword(credentials.getPassword());
 
             try (Jedis jedis = jedisPool.getResource()) {
-                String actualUser = jedis.get(App.REDIS_KEY_PREFIX + passwordHash);
+                String actualUser = jedis.get(LOGIN_KEY_PREFIX + passwordHash);
                 if (! StringUtils.equals(credentials.getUser(), actualUser)) {
                     return "";
                 }

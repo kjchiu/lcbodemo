@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import Search from '../containers/Search.jsx';
+import User from '../containers/User.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
 
 export default class App extends React.Component {
@@ -18,18 +19,13 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<Navbar>
-					<Nav>
-						<NavItem>Login</NavItem>
-					</Nav>
-				</Navbar>
 				<Grid>
+					<Row>
+						<User />
+					</Row>
 					<Row>
 						<Col xs={4}>
 							<Search/>
-						</Col>
-						<Col xs={4}>
-							what
 						</Col>
 					</Row>
 					<Row>

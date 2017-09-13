@@ -18,6 +18,8 @@ import {
 	createStore
 } from 'redux';
 
+import { auth }from './Actions';
+
 let reducer = combineReducers({
 	products,
 	login
@@ -29,12 +31,15 @@ const store = createStore(reducer, applyMiddleware(
 ));
 window.STORE = store;
 
-import * as Actions from './Actions';
-window.ACTIONS = Actions;
-//store.dispatch(queryProducts('beer', 1));
+//window.ACTIONS = Actions;
 
-store.dispatch(Actions.createUser('hello', 'there'));
-//store.dispatch(Actions.login('hello', 'there'));
+// send auth request
+// before starting render
+var matches = /token=(.+)\b/.exec(document.cookie);
+if (matches && matches[1]) {
+	var token = matches[1];
+	store.dispatch(auth(token));
+}
 
 render(
 	<Provider store={store}>
