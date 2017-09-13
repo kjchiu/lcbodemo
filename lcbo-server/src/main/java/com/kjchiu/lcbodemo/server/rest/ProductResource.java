@@ -3,14 +3,22 @@ package com.kjchiu.lcbodemo.server.rest;
 import com.kjchiu.lcbodemo.api.LcboClient;
 import com.kjchiu.lcbodemo.api.service.Paginated;
 import com.kjchiu.lcbodemo.api.service.entity.Product;
+import com.kjchiu.lcbodemo.server.AuthFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Optional;
 
 @Path("/")
 public class ProductResource extends LcboWrapper {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProductResource.class);
 
     public ProductResource(LcboClient client) {
         super(client);
@@ -29,8 +37,10 @@ public class ProductResource extends LcboWrapper {
 
     @GET
     @Path("/product")
+    @RolesAllowed(AuthFilter.AUTHENTICATED_ROLE)
     @Produces(MediaType.APPLICATION_JSON)
-    public Paginated<Product> find(@QueryParam("q") String query) {
+    public Paginated<Product> find(@Context SecurityContext securityContext, @QueryParam("q") String query) {
+        logger.info(securityContext.getAuthenticationScheme());
         return client.findProducts(query);
     }
 }
