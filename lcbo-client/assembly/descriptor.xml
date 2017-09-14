@@ -1,0 +1,15 @@
+<assembly>
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<includes>
+				<include>bundle.js</include>
+				<include>index.html</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
