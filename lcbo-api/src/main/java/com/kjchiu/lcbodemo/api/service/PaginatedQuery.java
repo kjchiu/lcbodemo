@@ -1,6 +1,5 @@
 package com.kjchiu.lcbodemo.api.service;
 
-import com.kjchiu.lcbodemo.api.service.Paginated;
 import retrofit2.Call;
 import retrofit2.http.Query;
 

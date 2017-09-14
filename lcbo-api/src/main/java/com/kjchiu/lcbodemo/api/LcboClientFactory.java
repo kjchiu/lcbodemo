@@ -7,16 +7,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+/**
+ * Create instances of LcboClient
+ */
 public class LcboClientFactory {
-
-    /**
-     * Create new lcbo service client
-     * @param key
-     * @return
-     */
-    public static LcboClient create(String key) {
-        return create(key, new ObjectMapper());
-    }
 
     /**
      * Create new lcbo service client

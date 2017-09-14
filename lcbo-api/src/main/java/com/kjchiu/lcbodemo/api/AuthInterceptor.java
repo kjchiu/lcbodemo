@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Inject lcbo-api authorization token
+ */
 public class AuthInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);

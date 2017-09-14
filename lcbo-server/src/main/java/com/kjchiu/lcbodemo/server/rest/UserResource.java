@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Tuple;
 
 import javax.annotation.security.RolesAllowed;
 import javax.crypto.SecretKeyFactory;
@@ -21,9 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/")
 public class UserResource {
@@ -36,6 +32,9 @@ public class UserResource {
     private final JedisPool jedisPool;
     private final String salt;
 
+    /**
+     * Wrap basic auth credentials
+     */
     private static class BasicCredentials {
 
         private String user;
@@ -73,6 +72,11 @@ public class UserResource {
         this.salt = salt;
     }
 
+    /**
+     * Create new user
+     * @param context
+     * @return
+     */
     @PUT
     @Path("/user")
     @Produces(MediaType.TEXT_PLAIN)
@@ -99,6 +103,11 @@ public class UserResource {
 
     }
 
+    /**
+     * Handle auth via auth token header
+     * @param context
+     * @return
+     */
     @POST
     @Path("/user")
     @RolesAllowed(AuthFilter.AUTHENTICATED_ROLE)
@@ -111,6 +120,11 @@ public class UserResource {
         }
     }
 
+    /**
+     * Handle basic auth
+     * @param context
+     * @return
+     */
     @GET
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,6 +153,7 @@ public class UserResource {
     }
 
     /**
+     * Salt + hash password
      * @param password
      * @return
      * @throws NoSuchAlgorithmException
