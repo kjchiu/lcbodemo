@@ -27,7 +27,9 @@ const AuthenticatedUser = ({
 	return (
 		<Col>
 			<Navbar.Text>Welcome {user}</Navbar.Text>
-			<Button onClick={logout}>Logout</Button>
+			<Navbar.Form>
+				<Button onClick={logout}>Logout</Button>
+			</Navbar.Form>
 			<NavDropdown eventKey={1} title="History" id="basic-nav-dropdown">
 				{items}
 			</NavDropdown>
