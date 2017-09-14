@@ -64,21 +64,30 @@ public class ProductResource extends LcboWrapper {
         List<String> history;
         if (hasHistory) {
             String user = security.getUserPrincipal().getName();
-            try (Jedis jedis = jedisPool.getResource()) {
-                String key = UserState.QUERY_HISTORY_PREFIX + user;
-                // maybe we shouldn't do this unless the query returns results?
-                long size = jedis.zadd(key, Instant.now().toEpochMilli(), query);
-                // rather than checking count each time
-                // purge elements older than threshold
-                jedis.zremrangeByRank(key, 0, -UserState.MAX_HISTORY_ITEMS - 1);
-                history = getQueryHistory(jedis, user);
-            }
+            history = storeQueryHistory(user, query);
         } else {
             history = new ArrayList<>();
         }
 
         return new PaginatedProducts(client.findProducts(query, page), history);
 
+    }
+
+    /**
+     * Append query to history then trim history
+     * @param user
+     * @return query history
+     */
+    public List<String> storeQueryHistory(String user, String query) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            String key = UserState.QUERY_HISTORY_PREFIX + user;
+            // maybe we shouldn't do this unless the query returns results?
+            long size = jedis.zadd(key, Instant.now().toEpochMilli(), query);
+            // rather than checking count each time
+            // purge elements older than threshold
+            jedis.zremrangeByRank(key, 0, -UserState.MAX_HISTORY_ITEMS - 1);
+            return getQueryHistory(jedis, user);
+        }
     }
 
     /**
