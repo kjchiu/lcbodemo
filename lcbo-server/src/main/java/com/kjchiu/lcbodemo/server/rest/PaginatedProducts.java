@@ -5,8 +5,15 @@ import com.kjchiu.lcbodemo.api.service.entity.Product;
 
 import java.util.List;
 
+/**
+ * Augment generic paginated item list
+ * to include product query history
+ */
 public class PaginatedProducts extends Paginated<Product> {
 
+    /**
+     * Product query history
+     */
     private List<String> history;
 
     public PaginatedProducts(Paginated<Product> products, List<String> history) {
