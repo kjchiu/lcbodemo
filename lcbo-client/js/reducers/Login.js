@@ -4,6 +4,7 @@ import {
 	CREATE_USER,
 	CREATE_USER_FAILED,
 	LOGOUT,
+	UPDATED_HISTORY,
 	encodePassword
 } from '../Actions';
 
@@ -15,7 +16,8 @@ export default function login(state={}, action) {
 			setAuthCookie(action.token);
 			return {
 				user: action.user,
-				token: action.token
+				token: action.token,
+				history: action.history
 			};
 		case LOGOUT:
 		case CREATE_USER_FAILED:
@@ -25,10 +27,17 @@ export default function login(state={}, action) {
 			// lack of auth vs failed auth
 			return {
 				user: '',
-				token: ''
-			}
+				token: '',
+				history: []
+			};
+		case UPDATED_HISTORY:
+			return {
+				...state,
+				history: action.history
+			};
+		default:
+			return state;
 	}
-	return state;
 }
 
 function setAuthCookie(token) {

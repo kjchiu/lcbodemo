@@ -4,6 +4,7 @@ import base64js from 'base64-js';
 
 export const QUERY_PRODUCTS = 'QUERY_PRODUCTS';
 export const RECEIVE_PRODUCTS = 'RECEIVE_PRODUCTS';
+export const UPDATED_HISTORY = 'UPDATED_HISTORY';
 
 /**
  * Signal product query initiated
@@ -25,6 +26,13 @@ export function queryProducts(query, page, token) {
 				query,
 				result
 			});
+
+			if (result.history && result.history.length) {
+				dispatch({
+					type: UPDATED_HISTORY,
+					history: result.history
+				});
+			}
 		});
 	};
 }
@@ -33,16 +41,17 @@ export const AUTHED = 'AUTHED';
 export const AUTH_FAILED = 'AUTH_FAILED';
 
 /**
- * Dispatch AUTH action
+ * Dispatch auth response
  * @param {Function} dispatch
  * @param {String} user
  * @param {String} token
  */
-function authenticated(dispatch, user, token) {
+function authenticated(dispatch, user, token, history=[]) {
 	dispatch({
 		type: AUTHED,
 		user,
-		token
+		token,
+		history
 	});
 }
 
@@ -66,11 +75,11 @@ export function auth(token) {
 		request('POST', '/rest/user', {
 			"Auth-Token": token
 		}).then(function done(xhr) {
-			var user = xhr.response;
-			if (! user || ! user.length) {
+			let response = JSON.parse(xhr.response);
+			if (! response) {
 				dispatch(failed());
 			} else {
-				authenticated(dispatch, user, token);
+				authenticated(dispatch, response.user, response.token, response.history);
 			}
 		});
 	};
@@ -100,8 +109,8 @@ export function login(user, password) {
 	var headers = addBasicAuth({}, user, password);
 	return dispatch => {
 		request('GET', '/rest/user', headers).then(function done(xhr) {
-			var token = xhr.response;
-			authenticated(dispatch, user, token);
+			var response = JSON.parse(xhr.response);
+			authenticated(dispatch, response.user, response.token, response.history);
 		});
 	}
 

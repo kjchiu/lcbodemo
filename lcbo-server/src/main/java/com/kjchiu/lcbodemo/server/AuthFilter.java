@@ -21,6 +21,7 @@ public class AuthFilter implements ContainerRequestFilter {
     public static final String AUTHENTICATED_ROLE = "AUTHENTICATED";
     public static final int SESSION_LENGTH_SECONDS = 3600; // 1 hour
     public static final String SESSION_TOKEN_PREFIX = App.REDIS_KEY_PREFIX + "session:";
+    public static final String HEADER_AUTH_TOKEN = "Auth-Token";
 
     JedisPool jedisPool;
 
@@ -32,7 +33,7 @@ public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        String authHeader = requestContext.getHeaderString("Auth-Token");
+        String authHeader = requestContext.getHeaderString(HEADER_AUTH_TOKEN);
         try(Jedis jedis = jedisPool.getResource()) {
 
             final String user = jedis.get(SESSION_TOKEN_PREFIX + authHeader);

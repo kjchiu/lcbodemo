@@ -50,19 +50,19 @@ const ProductGrid = ({items, pageInfo, query, onSelectPage}) => {
 				</Col>
 			</Row>
 			<Row>
-		<Col bsStyle="center-block">
-				<Pagination 
-					prev
-					next
-					first
-					last
-					ellipsis
-					boundaryLinks
-					items={numPages}
-					maxButtons={5}
-					activePage={pageInfo.page}
-					onSelect={onSelectPage.bind(this, query)} />
-		</Col>
+				<Col>
+						<Pagination 
+							prev
+							next
+							first
+							last
+							ellipsis
+							boundaryLinks
+							items={numPages}
+							maxButtons={5}
+							activePage={pageInfo.page}
+							onSelect={onSelectPage.bind(this, query)} />
+				</Col>
 			</Row>
 			{componentRows}
 		</Grid>

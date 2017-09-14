@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Tuple;
 
 import javax.annotation.security.RolesAllowed;
 import javax.crypto.SecretKeyFactory;
@@ -20,6 +21,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/")
 public class UserResource {
@@ -85,7 +89,6 @@ public class UserResource {
             }
 
             String token = generateAuthToken(jedis, credentials.getUser());
-            logger.debug("{} -> {}", credentials.getUser(), token);
             return token;
 
 
@@ -99,13 +102,19 @@ public class UserResource {
     @POST
     @Path("/user")
     @RolesAllowed(AuthFilter.AUTHENTICATED_ROLE)
-    public String auth(@Context ContainerRequestContext context) {
-        return context.getSecurityContext().getUserPrincipal().getName();
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserState auth(@Context ContainerRequestContext context) {
+        String user = context.getSecurityContext().getUserPrincipal().getName();
+        try(Jedis jedis =  jedisPool.getResource()) {
+            String token = context.getHeaderString(AuthFilter.HEADER_AUTH_TOKEN);
+            return  getUserState(user, token, jedis);
+        }
     }
 
     @GET
     @Path("/user")
-    public String login(@Context ContainerRequestContext context) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserState login(@Context ContainerRequestContext context) {
         BasicCredentials credentials = new BasicCredentials(context);
 
         try {
@@ -114,16 +123,17 @@ public class UserResource {
 
             try (Jedis jedis = jedisPool.getResource()) {
                 String actualUser = jedis.get(LOGIN_KEY_PREFIX + passwordHash);
-                if (! StringUtils.equals(credentials.getUser(), actualUser)) {
-                    return "";
+                if (!StringUtils.equals(credentials.getUser(), actualUser)) {
+                    return null;
                 }
 
-                return generateAuthToken(jedis, credentials.getUser());
+                String token = generateAuthToken(jedis, credentials.getUser());
+                return getUserState(credentials.getUser(), token, jedis);
 
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             logger.error("Failed to generate password hash", e);
-            return "";
+            return null;
         }
 
     }
@@ -144,6 +154,7 @@ public class UserResource {
 
     /**
      * Generate/save auth token
+     *
      * @param jedis
      * @return auth token
      */
@@ -155,5 +166,18 @@ public class UserResource {
         jedis.setnx(AuthFilter.SESSION_TOKEN_PREFIX + token, user);
         jedis.expire(App.REDIS_KEY_PREFIX + token, AuthFilter.SESSION_LENGTH_SECONDS);
         return token;
+    }
+
+    /**
+     * Construct client view of user
+     *
+     * @param user  user name
+     * @param token current session token
+     * @param jedis
+     * @return
+     */
+    public UserState getUserState(String user, String token, Jedis jedis) {
+        return new UserState(user, token, UserState.fetchHistory(jedis, user));
+
     }
 }

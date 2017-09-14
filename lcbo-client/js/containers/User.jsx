@@ -11,7 +11,8 @@ import {connect} from 'react-redux';
 import {
 	createUser,
 	login,
-	logout
+	logout,
+	queryProducts
 } from '../Actions';
 
 import UserLogin from '../components/UserLogin.jsx';
@@ -29,7 +30,10 @@ class User extends React.Component {
 			return (
 				<AuthenticatedUser
 					user={this.props.user}
-					logout={this.props.logout} />);
+					token={this.props.token}
+					history={this.props.history}
+					logout={this.props.logout}
+					onQuery={this.props.onQuery} />);
 		}
 	}
 }
@@ -38,7 +42,8 @@ const mapStateToProps = ({login}) => {
 	return {
 		user: login.user,
 		isAuthed: !! login.token,
-		token: login.token
+		token: login.token,
+		history: login.history
 	}
 }
 
@@ -64,7 +69,10 @@ function mapDispatchToProps(dispatch) {
 		logout: e => {
 			e.preventDefault();
 			dispatch(logout());
-		}
+		},
+		onQuery: (query, token, e) => {
+			dispatch(queryProducts(query, 1, token));
+		},
 	}
 }
 
